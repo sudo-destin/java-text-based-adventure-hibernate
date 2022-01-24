@@ -1,29 +1,120 @@
 # Jeu d'aventure texte
 
-L'objectif de ce projet est de créer un [jeu d'aventure texte](https://fr.wikipedia.org/wiki/Jeu_vid%C3%A9o_textuel) en ligne de commandes. Le jeu doit décrire au joueur ce que son personnage voit et ce qui se passe autour de lui; le joueur doit entrer des commandes afin de se déplacer et d'agir sur son environnement.
+L'objectif de ce projet est de créer un [jeu d'aventure texte](https://fr.wikipedia.org/wiki/Jeu_vid%C3%A9o_textuel) en ligne de commandes. Le jeu doit décrire un univers dans lequel le joueur pourra évoluer. Le fonctionnement de base de chaque jeu d'aventure texte est le suivant:
+- Le jeu décrit au joueur ce que son personnage voit et ce qui se passe autour de lui.
+- Le joueur doit entrer des commandes afin de se déplacer et d'agir sur son environnement.
+- Le jeu décrit le résultat des actions entreprises par le joueur.
+- On recommence à la première étape jusqu'à ce que l'aventure soit résolue.
 
-## Mission 1: lieux et navigation
+## Mission 1: où suis-je? que vois-je?
 
-Avant toute chose, il faut que le jeu décrive au joueur où il se trouve, et qu'il puisse se déplacer d'un endroit à l'autre. Le déroulement du jeu pourrait ressembler à l'exemple suivant:
+Avant de commencer à évoluer dans un univers, il faut déjà que celui-ci existe. La première étape consiste donc à modéliser un univers de jeu sous la forme de lieux (pièces, couloirs, boutiques, terrains, etc.) et d'éléments interactifs présents dans ceux-ci (éléments de décor, meubles, outils, créatures, personnes, etc.). 
+
+L'objectif de cette première mission est de faire en sorte que le joueur puisse demander au jeu de lui décrire n'importe quel lieu existant dans son univers. À ce stade, le joueur n'incarne pas encore un personnage de l'univers, il se contente de l'observer de l'extérieur comme à travers un guide touristique.
 
 <details>
 <summary>Exemple</summary>
 
-> You are in the bedroom. West is the bathroom, north is the corridor.
+`bedroom`
+
+> This is where you usually sleep. It's quite small, but at least the bed is comfy. **Available items**: bed, curtain.
+
+`bathroom`
+
+> This is the bathroom. There's no windows in there, so it tends to get easily dank. **Available items**: shower, toothbrush.
+
+`kitchen`
+
+> This is the kitchen. It still smells of yesterday's dinner. **Available items**: cookie, faucet.
+
+</details>
+
+### 1. Créer des lieux
+
+Implémenter les classes répondant aux spécifications suivantes:
+
+#### `Room`
+
+> Représente un lieu de l'univers de jeu dans lequel le joueur peut se trouver.
+
+| Méthode | Description |
+|---|---|
+| _**String** getName()_ | Renvoie le nom du lieu (exemple: `"bedroom"`) |
+| _**String** getDescription()_ | Renvoie la description du lieu (exemple: `"This is where you usually sleep. It's quite small, but at least the bed is comfy."`) |
+
+#### `RoomTest` _(facultative mais recommandée)_
+
+> Permet de s'assurer que la classe `Room` fonctionne comme attendu.
+
+| Méthode | Description |
+|---|---|
+| _**void** testConstructors()_ | Crée une nouvelle instance de `Room` et vérifie que les valeurs passées au constructeur on été correctement assignées aux propriétés correspondantes. |
+
+### 2. Demander au jeu de décrire des lieux
+
+Implémenter les classes répondant aux spécifications suivantes:
+
+#### `Game`
+
+> Représente une partie jouée par le joueur.
+
+| Méthode | Description |
+|---|---|
+| _**void** setup()_ | Initialise la partie en créant les objets de l'univers (pour l'instant, les lieux) |
+| _**void** update()_ | Décrit un cycle d'exécution de la partie (pour l'instant: attend une saisie utilisateur, chercher si celle-ci correspond à un lieu existant, puis affiche la description du lieu concerné) |
+| _**boolean** isRunning()_ | Permet de savoir si la partie est en cours (`true`) ou si elle est terminée (`false`) |
+
+### 3. Ajouter des éléments interactifs dans les lieux
+
+Implémenter les classes répondant aux spécifications suivantes:
+
+#### `Item`
+
+> Représente un élément de l'univers de jeu, avec lequel le joueur pourra interagir.
+
+| Méthode | Description |
+|---|---|
+| _**Room** getRoom()_ | Renvoie le lieu dans lequel se trouve l'élément interactif (exemple: `Room@2 { name: "bathroom" }`) |
+| _**String** getName()_ | Renvoie le nom de l'élément interactif (exemple: `"toothbrush"`) |
+| _**boolean** isVisible()_ | Permet de savoir si l'élément interactif est visible (il apparaît dans les descriptions fournies par le jeu): `true` = oui, `false` = non |
+
+#### `ItemTest` _(facultative mais recommandée)_
+
+> Permet de s'assurer que la classe `Item` fonctionne comme attendu.
+
+| Méthode | Description |
+|---|---|
+| _**void** testConstructors()_ | Crée une nouvelle instance de `Item` et vérifie que les valeurs passées au constructeur on été correctement assignées aux propriétés correspondantes. |
+
+#### `Room`
+
+| Méthode | Description |
+|---|---|
+| _**List\<Item\>** getItems()_ | Renvoie la liste de tous les éléments interactifs présents dans ce lieu. |
+| _**void** addItem(Item item)_ | Ajoute un élément interactif à la liste des éléments interactifs présents dans ce lieu. |
+
+**Attention**: il convient de s'assurer que la valeur de retour de la méthode `Room.getItems()` soit synchronisée avec la valeur de retour de la méthode `Item.getRoom()`. Par exemple, si la méthode `getItems()` de la chambre renvoie le lit et les rideaux, il faut s'assurer que la méthode `getRoom()` du lit et des rideaux renvoie bien la chambre.
+
+## Mission 2: naviguer entre les lieux
+
+Maintenant que nous sommes capables d'obtenir la description de chaque lieu en écrivant son nom, nous allons pouvoir proposer au joueur d'incarner un personnage qui se trouve dans un lieu donné, et qui est capable de se déplacer de l'un à l'autre. Le déroulement du jeu pourrait ressembler à l'exemple suivant:
+
+<details>
+<summary>Exemple</summary>
+
+> This is where you usually sleep. It's quite small, but at least the bed is comfy. **Available items**: bed, curtain. **Available directions**: west, north.
 
 `west`
 
-> You are in the bathroom. East is the bedroom.
+> This is the bathroom. There's no windows in there, so it tends to get easily dank. **Available items**: shower, toothbrush. **Available directions**: east.
 
 `west`
 
 > You cannot go into that direction!
 
-> You are in the bathroom. East is the bedroom.
-
 `east`
 
-> You are in the bedroom. West is the bathroom, north is the corridor.
+> This is where you usually sleep. It's quite small, but at least the bed is comfy. **Available items**: bed, curtain. **Available directions**: west, north.
 
 </details>
 
@@ -35,7 +126,6 @@ Afin d'obtenir ce résultat, implémenter les classes ci-après en suivant les s
 
 | Méthode | Description |
 |---|---|
-| _**String** getName()_ | Renvoie le nom du lieu (exemple: `"bedroom"`) |
 | _**Room** getRoomInDirection(**Direction** direction)_ | Renvoie le lieu où l'on arrive lorsque l'on part de ce lieu et qu'on emprunte la direction passée en paramètre (exemple: depuis la chambre à coucher, en passant la direction ouest, on devrait obtenir la salle de bain) |
 
 ### `Direction`
@@ -45,6 +135,16 @@ Afin d'obtenir ce résultat, implémenter les classes ci-après en suivant les s
 | Méthode | Description |
 |---|---|
 | _**String** getName()_ | Renvoie le nom de la direction (exemple: `"north"`) |
+
+### `RoomConnection`
+
+- Représente un passage entre deux lieux.
+
+| Méthode | Description |
+|---|---|
+| _**Room** getFromRoom()_ | Renvoie le lieu dont part le passage |
+| _**Room** getToRoom()_ | Renvoie le lieu auquel le passage aboutit |
+| _**Direction** getDirection()_ | Renvoie la direction qu'il faut suivre pour emprunter ce passage |
 
 ### `Game`
 
@@ -57,22 +157,14 @@ Afin d'obtenir ce résultat, implémenter les classes ci-après en suivant les s
 | _**boolean** isRunning()_ | Permet de savoir si la partie est en cours (`true`) ou si elle est terminée (`false`) |
 | _**Room** getCurrentRoom()_ | Renvoie le lieu dans lequel le joueur se trouve actuellement |
 
-### `App`
+## Mission 3: interagir avec les éléments
 
-- Point d'entrée de l'application.
-
-| Méthode | Description |
-|---|---|
-| _**static void** main(**String** args)_ | Processus principal. Crée une nouvelle partie et l'initialise, puis lui demande de réaliser un cycle d'exécution tant qu'elle est en cours. |
-
-## Mission 2: objets et interactions
-
-Maintenant que nos joueurs sont capables de se déplacer d'un lieu à une autre, il faudrait ajouter des éléments (objets, personnages, monstres…) avec lesquels ils pourront interagir.
+Maintenant que nos joueurs sont capables de se déplacer d'un lieu à une autre et de voir les éléments qui s'y trouvent, il faudrait qu'ils soient puissent interagir avec en utilisant des commandes.
 
 <details>
 <summary>Exemple</summary>
 
-> You are in the bedroom. West is the bathroom, north is the corridor. There is a bed and a mirror.
+> This is where you usually sleep. It's quite small, but at least the bed is comfy. **Available items**: bed, curtain. **Available directions**: west, north.
 
 `use bed`
 
@@ -90,21 +182,26 @@ Maintenant que nos joueurs sont capables de se déplacer d'un lieu à une autre,
 
 > Silence...
 
+`use toothbrush`
+
+> There is no such item here!
+
 </details>
 
-### 1. Intégrer des objets à l'univers
-
-- Écrire une classe `Item`, qui représente les éléments interactifs de l'univers.
-- Chaque élément doit avoir un nom.
-- Chaque pièce peut contenir une quantité indéterminée d'éléments. La liste des éléments visibles doit être affichée automatiquement dans chaque pièce.
-
-### 2. Interagir avec des éléments
+### 1. Interagir avec des éléments
 
 - Écrire une classe `Command` qui représente une commande que l'utilisateur peut entrer dans la console.
 - Chaque commande doit avoir un texte par défaut qui s'affichera si jamais l'utilisateur tente de l'utiliser avec un élément qui n'a pas été prévu pour (exemple: `talk to mirror`).
-- Chaque élément peut réagir à un nombre indéterminé de commandes. Dans un premier temps, utiliser une commande particulière avec un élément particulier doit produire l'affichage d'un texte particulier.
+- Chaque élément peut réagir à un nombre indéterminé de commandes. Dans un premier temps, utiliser une commande particulière avec un élément particulier doit produire l'affichage d'un texte particulier (exemple: `use bed` doit produire l'affichage du texte `You take a quick nap. You feel refreshed!`).
 
-### 3. Programmer des interactions complexes
+<details>
+<summary>[INDICE] Ça peut être utile</summary>
+
+[Documentation Java: HashMap](https://docs.oracle.com/javase/8/docs/api/java/util/HashMap.html)
+
+</details>
+
+### 2. Programmer des interactions complexes
 
 Utiliser une commande sur un élément doit pouvoir produire une variété d'effets, dont afficher un texte n'est qu'un exemple.
 
@@ -114,101 +211,96 @@ Implémenter une ou plusieurs des classes suivantes:
 |---|---|
 | **MessageEffect** | Produit l'affichage d'un message dans la console. |
 | **EndGameEffect** | Termine la partie en cours. |
-| **RenameItemEffect** | Change le nom d'un élément donné de manière permanente. |
-| **RemoveItemEffect** | Supprime un élément donné de la pièce dans laquelle il apparaît de manière permanente. |
+| **ChangeCurrentRoomEffect** | Change le lieu dans lequel le joueur se trouve actuellement. |
+| **ChangeItemVisibilityEffect** | Change la visibilité d'un élément interactif. |
+| **ModifyInventoryEffect** | Ajoute ou retire un élément interactif de l'inventaire du joueur. |
 
 - Chaque élément peut réagir à chaque commande en utilisant l'un des effets proposés ci-dessus (au lieu de simplement afficher un message comme précédemment demandé).
 - BONUS: Chaque élément peut réagir à chaque commande en utilisant une série d'effets, au lieu d'un seul effet.
 
 #### Exemples d'interactions à implémenter
 
-- Manger le biscuit sur la table de la cuisine (`eat cookie`) doit produire sa disparition.
-- Ouvrir le tiroir du bureau dans la chambre (`open drawer`) doit provoquer la réalisation que le tiroir est vide, et son nom doit changer en conséquence (`empty drawer`).
+- Manger le biscuit sur la table de la cuisine (`eat cookie`) doit produire sa disparition de la pièce.
+- Ouvrir le tiroir du bureau dans la chambre (`open drawer`) doit rendre visible un élément présent dans celui-ci (par exemple, un carnet de notes), le refermer (`close drawer`) doit le rendre invisible.
+- Utiliser la voiture dans le garage (`use car`) doit produire le déplacement du joueur vers un autre lieu (par exemple, la ville). Utiliser la voiture dans ce dernier lieu doit produire le retour du joueur au garage.
+- Ramasser une brosse à dents dans la salle de bain (`pick up toothbrush`) doit provoquer son ajout à l'inventaire et sa disparition de la pièce.
 - Toucher une prise électrique (`touch plug`) doit produire la mort du héros, et donc la fin de la partie.
 
-Si le bonus de l'étape 3 a été réalisé, chaque interaction doit être accompagnée d'au moins un message décrivant l'effet obtenu.
+Si le bonus de l'étape 2 a été réalisé, chaque interaction doit être accompagnée d'au moins un message décrivant l'effet obtenu.
 
-## Mission 3: gestion d'états
+## Mission 4: harmoniser les commandes
 
-Nous avons presque tout ce qu'il faut pour faire un véritable jeu avec des éléments à débloquer au fur et à mesure. Néanmoins, il manque actuellement des états à nos éléments; c'est-à-dire que chaque élément posséde uniquement les propriétés qui lui ont été attribuées à la création du jeu, et qu'il n'a pas de propriété qui a vocation à être modifiée en cours de jeu.
+Le processus principal qui permet de faire fonctionner le jeu est désormais capable de reconnaître les saisies utilisateur qui correspondent à une direction (`east`, `south`, `west`…) ainsi que celles qui correspondent à une interaction avec un objet (`use bed`, `open drawer`, `pick up notepad`…). À ce stade, nous aimerions ajouter des commandes générales comme `help` qui pourrait afficher la liste des commandes possibles, ou encore `exit` qui permettrait d'interrompre le jeu. Cependant, nous commençons à entrevoir que le fait de rajouter des nouvelles commandes de la sorte risque de complexifier le processus principal du jeu, qui est déjà bien chargé: car si nous continuons sur notre lancée, chaque nouveau type de commandes va devoir être traité séparément des autres.
 
-### 1. Ajouter des états
+Dans un premier temps, considérant qu'il est de la responsabilité de chaque commande de savoir quel effet elle est censée produire, il pourrait être judicieux d'alléger le processus principal en déplaçant les différents effets possibles (quitter le jeu, afficher les commandes disponibles, changer de lieu, etc…) dans la classe correspondante.
 
-Créer des classes **BooleanState**, **NumberState**, **StringState**… capables de contenir une valeur de chaque type. Chaque élément du jeu (**Item**) doit pouvoir avoir une série d'états (par exemple, pour une fenêtre: ouvert/fermé, pour un appareil à piles: le nombre de fois qu'il a été utilisé, pour un personnage: "inconnu" tant qu'on n'a pas appris son vrai nom…).
-
-### 2. Manipuler les états
-
-Créer des classes d'effets permettant de modifier la valeur d'un état précis. Ainsi, lorsque l'on utilise une commande sur un élément, l'un des effets possibles doit être de modifier un état (de l'élément qui a répondu à la commande, ou d'une autre).
-
-### 3. Créer une classe d'état générique
-
-Comme les différentes classes d'état ont le même fonctionnement, hormis le type de valeur qu'ils contiennent, les refactoriser sous forme d'une seule [classe générique](https://docs.oracle.com/javase/tutorial/java/generics/types.html), et adapter les autres classes en conséquence.
-
-## ☕ Pause refactorisation
-
-### Rendre les commandes autonomes
-
-N'est-ce pas en réalité la responsabilité de chaque commande de déterminer si une saisie de l'utilisateur lui correspond?
+De plus, considérant que les nouvelles commandes que nous souhaiterions implémenter, mais aussi les directions, et les actions que nous pouvons utiliser sur les éléments interactifs, sont finalement toutes des types de commandes qui ont simplement leur particularités, l'objectif ultime de cette mission est de parvenir à refactoriser le code de manière que tous les types de commandes soient traités de la mème manière, au lieu d'ètre traités séparément.
 
 <details>
-<summary>Spoiler</summary>
-Oui!
+<summary>Illustration</summary>
+
+La logique actuelle:
+```java
+class Game
+{
+    public void update()
+    {
+        // Attend une saisie utilisateur
+        // Si la saisie utilisateur correspond à la commande "quitter le jeu"
+            // Termine la partie
+        // Si la saisie utilisateur correspond à la commande "afficher l'aide"
+            // Affiche la liste des commandes
+        // Si la saisie utilisateur correspond à une direction
+            // Modifie le lieu actuel
+        // Si la saisie utilisateur correspond à une interaction avec un élément présent dans le lieu actuel
+            // Déclenche l'effet correspondant à la commande spécifiée sur cet élément
+        // etc…
+    }
+}
+```
+
+La logique désirée:
+```java
+class Game
+{
+    public void update()
+    {
+        // Attend une saisie utilisateur
+        // Pour chaque commande possible, peu importe son type réel (commande globale, direction, interaction…)
+            // Demande à la commande de traiter la saisie utilisateur. Si la commande correspond à la saisie utilisateur, elle réalise l'effet de la commande par elle-même, et la boucle est interrompue. Sinon, rien ne se passe.
+    }
+}
+```
+
 </details>
 
-Implémenter une méthode _**String** match(**String** userInput)_ dans la classe **Command**. Cette méthode doit examiner la saisie utilisateur passée en paramètre et renvoyer:
+### 1. Ajouter des commandes globales
 
-- le reste de la saisie (le texte qui suit la commande) en cas de correspondance;
-- ou **null** si la saisie ne correspond pas à la commande.
+- Implémenter une ou plusieurs des classes suivantes:
 
-### Unifier les commandes
+| Classe | Description |
+|---|---|
+| **ExitCommand** | Termine la partie en cours. |
+| **HelpCommand** | Affiche la liste de toutes les commandes possibles. |
+| **ResetCommand** | Recommence une nouvelle partie. |
 
-Après tout, les directions sont aussi des commandes, non?
+> - Chacune de ces classes doit posséder une propriété **Game** qui fait référence à la partie en cours.
+> - Chacune de ces classes doit posséder une méthode _**boolean** process(**String** userInput)_. Le rôle de cette méthode est de traiter une saisie utilisateur. Si la saisie utilisateur correspond à la commande concernée, alors elle doit produire l'effet de la commande et renvoyer **true**. Sinon, elle doit ne rien faire et renvoyer **false**.
+- Ajouter au processus principal dans la classe **Game** une condition demandant à une instance de chacune de ces classes de traiter par elle-même la saisie utilisateur.
 
-<details>
-<summary>Spoiler</summary>
-Oui!
-</details>
+### 2. Refactoriser les directions
 
-Implémenter une classe **StandAloneCommand** capable de produire une correspondance avec le nom de la commande (sans argument), et une classe **ArgumentCommand** capable de produire une correspondance avec le nom de la commande suivi d'autre chose. Les directions doivent être un cas particulier de **StandAloneCommand**. Les commandes qui permettent d'interagir avec les objets doivent être des **ArgumentCommand**.
+- Renommer la classe **Direction** en **DirectionCommand**.
+- Adapter la classe **DirectionCommand** pour qu'elle corresponde aux mêmes spécifications que les commandes globales, énumérées au point 1.
+- Adapter le processus principal dans la classe **Game** de façon que celui-ci se contente de demander à chaque direction de traiter par elle-même la saisie utilisateur.
 
-### Unifier les commandes (bis)
+### 3. Refactoriser les interactions avec les éléments
 
-Finalement, changer de lieu n'est jamais qu'un effet associé à une commande comme un autre, pas vrai?
+- Renommer la classe **Command** en **ItemCommand**.
+- Adapter la classe **ItemCommand** pour qu'elle corresponde aux mêmes spécifications que les commandes globales, énumérées au point 1.
+- Adapter le processus principal dans la classe **Game** de façon que celui-ci se contente de demander à chaque commande représentant une interaction avec un élément de traiter par elle-même la saisie utilisateur.
 
-<details>
-<summary>Spoiler</summary>
-Oui!
-</details>
+### 4. Unifier tous les types de commandes
 
-Implémenter une classe **ChangeRoomEffect** permettant de produire le changement de lieu lors de son déclenchement. Puis, implémenter une méthode _**List<Effect>** getEffects()_ dans la classe **StandAloneCommand** capable de renvoyer une liste contenant au moins un objet **ChangeRoomEffect**.
-
-## 🤔 Pour se prendre la tête en attendant la prochaine fois…
-
-- Comment pourrait-on implémenter des structures de contrôle (conditions, boucles…) dans les effets associés aux différentes commandes? Et comment pourrait-on les intercaler dans les listes d'effets existantes?
-- Comment pourrait-on implémenter des changements d'état relatifs (c'est-à-dire, qui se basent sur la valeur actuelle de l'état au lieu de le remplacer complètement par une nouvelle valeur)? Par exemple, ajouter 1 ou retirer 1 à la valeur actuelle, au lieu de la remplacer par 1.
-- Comment pourrait-on implémenter des opérateurs spécifiques à chaque type d'état? Par exemple, des opérateurs logiques (&&, ||, ...) pour les valeurs booléennes, des opérateurs arithmétiques (+, -, ...) pour les nombres, etc. Et ce, idéalement en conservant la classe générique **State<T>**?
-- Comment pourrait-on sauvegarder une partie afin que l'état du jeu ne soit pas perdu lorsqu'on quitte l'application, et qu'on puisse le retrouver plus tard? Où et comment les informations de chaque partie pourraient-elles être stockées?
-
-## Mission 4: créer la base de données
-
-Plutôt que de créer manuellement les éléments de l'univers dans la méthode **setup()** de **Game**, il serait intéressant de pouvoir les créer automatiquement à partir du contenu d'une base de données.
-
-- Créer le schéma de base de données à l'aide d'un outil de gestion de base de données (PHPMyAdmin, Adminer…) en se basant sur le diagramme de classes de l'application: https://lucid.app/lucidchart/invitations/accept/inv_3e03fc78-d8a0-4e71-adce-ec3aa38b10eb?viewport_loc=-384%2C-21%2C1985%2C851%2C0_0
-- Peupler la base de données avec les exemples actuellement présents dans le code Java.
-- Écrire les requêtes SQL permettant de répondre aux opérations exécutées par l'application (partant d'un lieu A et empruntant une direction B, dans quel lieu doit-on arriver? connaissant un élément A et une commande B, quels effets cela doit-il produire? etc…)
-
-## Mission 5: lire la base de données
-
-Maintenant que la base de données est créée, il faut adapter le code Java afin de faire correspondre les classes aux tables.
-
-- Ajouter Hibernate comme dépendance à l'application.
-- Adapter le code des modéles afin de configurer Hibernate correctement.
-- Écrire des méthodes permettant de récupérer un élément de la base de données en fonction de son identifiant, et vérifier qu'elles fonctionnent correctement.
-
-## Mission 6: ajouter un éditeur de lieux
-
-Dans le fichier **Editor.java**, coder une application en ligne de commandes permettant d'obtenir la liste de tous les lieux existants dans la base de données, de créer des nouveaux lieux, modifier et supprimer des lieux existants.
-
-### BONUS
-
-Essayer d'appliquer les bonnes pratiques de programmation orientée objet étudiée en cours afin d'obtenir un code bien structuré et maintenable.
+- Écrire une interface **Command** qui synthétise la structure commune à toutes les classes de commandes crées précédemment. Toutes les classes de commandes doivent implémenter cette interface.
+- Refactoriser le processus principal dans la classe **Game** de façon à rassembler tous les appels aux méthodes _process_ en un seul et même appel.
