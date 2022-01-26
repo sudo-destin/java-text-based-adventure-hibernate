@@ -77,4 +77,33 @@ INSERT INTO `room_connection` (`id`, `from_room_id`, `to_room_id`, `direction_id
 (3,	1,	3,	4),
 (4,	3,	1,	2);
 
+DROP TABLE IF EXISTS `item_command`;
+CREATE TABLE `item_command` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL,
+  `default_message` varchar(255) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+INSERT INTO `item_command` (`id`, `name`, `default_message`) VALUES
+(1,	'use',	'You have no idea how to use that.'),
+(2,	'open',	'This doesn\'t seem to open.');
+
+DROP TABLE IF EXISTS `effect`;
+CREATE TABLE `effect` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `command_id` int(10) unsigned NOT NULL,
+  `item_id` int(10) unsigned NOT NULL,
+  `message` varchar(255) NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `command_id` (`command_id`),
+  KEY `item_id` (`item_id`),
+  CONSTRAINT `effect_ibfk_1` FOREIGN KEY (`command_id`) REFERENCES `item_command` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `effect_ibfk_2` FOREIGN KEY (`item_id`) REFERENCES `item` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+INSERT INTO `effect` (`id`, `command_id`, `item_id`, `message`) VALUES
+(1,	1,	1,	'You take a quick nap. You feel refreshed!'),
+(2,	2,	3,	'You open the curtains and take a look outside.');
+
 -- 2022-01-24 10:44:14

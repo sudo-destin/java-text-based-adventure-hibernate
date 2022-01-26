@@ -1,5 +1,7 @@
 package com.example.entity;
 
+import java.util.List;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -7,7 +9,10 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
+
+import com.example.entity.effect.MessageEffect;
 
 /**
  * Représente un élément de l'univers de jeu, avec lequel le joueur pourra interagir.
@@ -39,6 +44,12 @@ public class Item
      */
     @Column(name = "visible")
     private boolean visible;
+    /**
+     * La liste de tous les effets que cet élément interactif peut produire
+     */
+    @OneToMany
+    @JoinColumn(name = "item_id")
+    private List<MessageEffect> effects;
 
     /**
      * @return L'identifiant en base de données

@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
+import javax.persistence.NoResultException;
 import javax.persistence.Persistence;
 
 import com.example.entity.Item;
@@ -41,5 +42,23 @@ public class ItemRepository
             .setParameter("visible", visible)
             .getResultList();
         return items;
+    }
+
+    /**
+     * @param room Le lieu dans lequel effectuer la recherche
+     * @param name Le nom de l'élément interactif recherché
+     * @return L'élément interactif visible correspondant au nom spécifié dans le lieu spécifié
+     */
+    public Item findByRoomAndName(Room room, String name)
+    {
+        try {
+            return entityManager.createQuery("SELECT item FROM Item item WHERE name = :name AND room = :room AND visible = true", Item.class)
+                .setParameter("name", name)
+                .setParameter("room", room)
+                .getSingleResult();
+        }
+        catch (NoResultException exception) {
+            return null;
+        }
     }
 }
