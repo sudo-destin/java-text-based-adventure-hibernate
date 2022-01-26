@@ -1,12 +1,5 @@
 package com.example;
 
-import java.util.List;
-
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
-
-import com.example.entity.Room;
 import com.example.game.Game;
 
 /**

@@ -41,6 +41,18 @@ public class Room
     @OneToMany
     @JoinColumn(name = "room_id")
     private List<Item> items;
+    /**
+     * La liste de tous les passages qui prennent ce lieu comme lieu de départ
+     */
+    @OneToMany
+    @JoinColumn(name = "from_room_id")
+    private List<RoomConnection> connectionsFrom;
+    /**
+     * La liste de tous les passages qui prennent ce lieu comme lieu d'arrivée
+     */
+    @OneToMany
+    @JoinColumn(name = "to_room_id")
+    private List<RoomConnection> connectionsTo;
 
     /**
      * @return L'identifiant en base de données

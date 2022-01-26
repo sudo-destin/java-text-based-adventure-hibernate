@@ -6,6 +6,7 @@ import javax.persistence.NoResultException;
 import javax.persistence.Persistence;
 
 import com.example.entity.Room;
+import com.example.entity.command.DirectionCommand;
 
 /**
  * Service spécialisé dans les opérations en base de données concernant les objets Room
@@ -28,18 +29,27 @@ public class RoomRepository
     }
 
     /**
-     * @param name Le nom du lieu recherché
-     * @return Le lieu correspondant au nom demandé
+     * @param id L'identifiant en base de données du lieu recherché
+     * @return Le lieu correspondant à l'identifiant spécifié
      */
-    public Room findRoomByName(String name)
+    public Room findById(int id)
+    {
+        return entityManager.find(Room.class, id);
+    }
+
+    /**
+     * @param fromRoom Le lieu de départ
+     * @param direction La direction à emprunter
+     * @return Le lieu dans lequel on arrive lorsqu'on part du lieu spécifié et qu'on emprunte la direction spécifiée
+     */
+    public Room findByFromRoomAndDirection(Room fromRoom, DirectionCommand direction)
     {
         try {
-            Room room = entityManager.createQuery("SELECT room FROM Room room WHERE name = :name" , Room.class)
-                .setParameter("name", name)
+            return entityManager.createQuery("SELECT room FROM Room room JOIN room.connectionsTo AS connection WHERE connection.fromRoom = :fromRoom AND connection.direction = :direction", Room.class)
+                .setParameter("fromRoom", fromRoom)
+                .setParameter("direction", direction)
                 .getSingleResult();
-            return room;
         }
-        // Si la requête ne renvoie aucun résultat, renvoie null au lieu d'arrêter l'application
         catch (NoResultException exception) {
             return null;
         }

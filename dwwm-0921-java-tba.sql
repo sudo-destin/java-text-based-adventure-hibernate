@@ -42,4 +42,39 @@ INSERT INTO `item` (`id`, `name`, `visible`, `room_id`) VALUES
 (8,	'lift',	1,	4),
 (9,	'lift',	1,	1);
 
+DROP TABLE IF EXISTS `direction_command`;
+CREATE TABLE `direction_command` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `name` (`name`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+INSERT INTO `direction_command` (`id`, `name`) VALUES
+(1,	'east'),
+(4,	'north'),
+(2,	'south'),
+(3,	'west');
+
+DROP TABLE IF EXISTS `room_connection`;
+CREATE TABLE `room_connection` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `from_room_id` int(10) unsigned NOT NULL,
+  `to_room_id` int(10) unsigned NOT NULL,
+  `direction_id` int(10) unsigned NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `from_room_id_direction_id` (`from_room_id`,`direction_id`),
+  KEY `to_room_id` (`to_room_id`),
+  KEY `direction_id` (`direction_id`),
+  CONSTRAINT `room_connection_ibfk_1` FOREIGN KEY (`from_room_id`) REFERENCES `room` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `room_connection_ibfk_2` FOREIGN KEY (`to_room_id`) REFERENCES `room` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `room_connection_ibfk_3` FOREIGN KEY (`direction_id`) REFERENCES `direction_command` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+INSERT INTO `room_connection` (`id`, `from_room_id`, `to_room_id`, `direction_id`) VALUES
+(1,	1,	2,	1),
+(2,	2,	1,	3),
+(3,	1,	3,	4),
+(4,	3,	1,	2);
+
 -- 2022-01-24 10:44:14
