@@ -1,10 +1,15 @@
 package com.example.entity.effect;
 
+import javax.persistence.DiscriminatorValue;
+import javax.persistence.Entity;
+
 import com.example.game.EffectInterpreter;
 
 /**
  * Représente un effet permettant de terminer la partie en cours
  */
+@Entity
+@DiscriminatorValue("EndGame")
 public class EndGameEffect extends Effect
 {
     /**

@@ -4,11 +4,9 @@ import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.Transient;
 
 import com.example.entity.Room;
 import com.example.game.EffectInterpreter;
-import com.example.game.Game;
 
 /**
  * Représente un effet permettant de changer de lieu
