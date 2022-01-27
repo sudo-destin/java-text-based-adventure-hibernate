@@ -8,12 +8,12 @@ import javax.persistence.Persistence;
 
 import com.example.entity.Item;
 import com.example.entity.command.ItemCommand;
-import com.example.entity.effect.MessageEffect;
+import com.example.entity.effect.Effect;
 
 /**
  * Service spécialisé dans les opérations en base de données concernant les objets MessageEffect
  */
-public class MessageEffectRepository
+public class EffectRepository
 {
     /**
      * Le gestionnaire d'entités permettant l'accès effectif à la base de données
@@ -23,7 +23,7 @@ public class MessageEffectRepository
     /**
      * Crée un nouveau service
      */
-    public MessageEffectRepository()
+    public EffectRepository()
     {
         // Crée une instance du gestionnaire d'entités
         EntityManagerFactory factory = Persistence.createEntityManagerFactory("TextBasedAdventure");
@@ -35,9 +35,9 @@ public class MessageEffectRepository
      * @param item L'élément interactif qui déclenche les effets lorsque la commande est utilisée avec
      * @return La liste des effets correspondant à l'utilisation de la commande spécifiée sur l'élément interactif spécifié
      */
-    public List<MessageEffect> findByCommandAndItem(ItemCommand command, Item item)
+    public List<Effect> findByCommandAndItem(ItemCommand command, Item item)
     {
-        return entityManager.createQuery("SELECT effect FROM MessageEffect effect WHERE command = :command AND item = :item", MessageEffect.class)
+        return entityManager.createQuery("SELECT effect FROM Effect effect WHERE command = :command AND item = :item", Effect.class)
             .setParameter("command", command)
             .setParameter("item", item)
             .getResultList();

@@ -12,7 +12,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
-import com.example.entity.effect.MessageEffect;
+import com.example.entity.effect.Effect;
 
 /**
  * Représente un élément de l'univers de jeu, avec lequel le joueur pourra interagir.
@@ -49,7 +49,7 @@ public class Item
      */
     @OneToMany
     @JoinColumn(name = "item_id")
-    private List<MessageEffect> effects;
+    private List<Effect> effects;
 
     /**
      * @return L'identifiant en base de données

@@ -10,12 +10,12 @@ import com.example.entity.Item;
 import com.example.entity.Room;
 import com.example.entity.command.DirectionCommand;
 import com.example.entity.command.ItemCommand;
-import com.example.entity.effect.MessageEffect;
+import com.example.entity.effect.Effect;
 import com.example.repository.ItemRepository;
 import com.example.repository.RoomRepository;
 import com.example.repository.command.DirectionCommandRepository;
 import com.example.repository.command.ItemCommandRepository;
-import com.example.repository.effect.MessageEffectRepository;
+import com.example.repository.effect.EffectRepository;
 
 
 /**
@@ -44,7 +44,7 @@ public class Game
     private ItemRepository itemRepository;
     private DirectionCommandRepository directionRepository;
     private ItemCommandRepository itemCommandRepository;
-    private MessageEffectRepository effectRepository;
+    private EffectRepository effectRepository;
 
     /**
      * Crée une nouvelle partie
@@ -56,7 +56,7 @@ public class Game
         itemRepository = new ItemRepository();
         directionRepository = new DirectionCommandRepository();
         itemCommandRepository = new ItemCommandRepository();
-        effectRepository = new MessageEffectRepository();
+        effectRepository = new EffectRepository();
     }
 
     /**
@@ -128,7 +128,7 @@ public class Game
                     return;
                 }
                 // Récupère la liste des effets prévus lorsque l'on utilise cette commande sur cet élément
-                List<MessageEffect> effects = effectRepository.findByCommandAndItem(command, item);
+                List<Effect> effects = effectRepository.findByCommandAndItem(command, item);
                 // S'il n'est pas possible d'utiliser cette commande sur cet élément interactif
                 if (effects.isEmpty()) {
                     // Affiche le message par défaut de la commande
@@ -136,8 +136,9 @@ public class Game
                     return;
                 }
                 // Sinon, déclenche tous les effets successivement
-                for (MessageEffect effect : effects) {
-                    System.out.println(effect.getMessage());
+                EffectInterpreter interpreter = new EffectInterpreter(this);
+                for (Effect effect : effects) {
+                    effect.delegateTo(interpreter);
                 }
                 return;
             }
@@ -178,5 +179,22 @@ public class Game
     public void terminate()
     {
         isRunning = false;
+    }
+
+    /**
+     * @return Le lieu dans lequel le joueur se trouve actuellement
+     */
+    public Room getCurrentRoom()
+    {
+        return currentRoom;
+    }
+
+    /**
+     * Modifie le lieu dans lequel le joueur se trouve actuellement
+     * @param room Le nouveau lieu
+     */
+    public void setCurrentRoom(Room room)
+    {
+        this.currentRoom = room;
     }
 }

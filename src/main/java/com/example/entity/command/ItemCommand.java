@@ -11,7 +11,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
-import com.example.entity.effect.MessageEffect;
+import com.example.entity.effect.Effect;
 
 /**
  * Représente une action que le joueur peut utiliser sur un élément interactif
@@ -42,7 +42,7 @@ public class ItemCommand
      */
     @OneToMany
     @JoinColumn(name = "command_id")
-    private List<MessageEffect> effects;
+    private List<Effect> effects;
 
     /**
      * @return Le nom de la commande
