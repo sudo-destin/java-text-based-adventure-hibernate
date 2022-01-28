@@ -92,18 +92,25 @@ INSERT INTO `item_command` (`id`, `name`, `default_message`) VALUES
 DROP TABLE IF EXISTS `effect`;
 CREATE TABLE `effect` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `dtype` varchar(255) NOT NULL,
   `command_id` int(10) unsigned NOT NULL,
   `item_id` int(10) unsigned NOT NULL,
-  `message` varchar(255) NOT NULL,
+  `message` varchar(255) DEFAULT NULL,
+  `target_room_id` int(10) unsigned DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `command_id` (`command_id`),
   KEY `item_id` (`item_id`),
+  KEY `target_room_id` (`target_room_id`),
   CONSTRAINT `effect_ibfk_1` FOREIGN KEY (`command_id`) REFERENCES `item_command` (`id`) ON DELETE CASCADE,
-  CONSTRAINT `effect_ibfk_2` FOREIGN KEY (`item_id`) REFERENCES `item` (`id`) ON DELETE CASCADE
+  CONSTRAINT `effect_ibfk_2` FOREIGN KEY (`item_id`) REFERENCES `item` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `effect_ibfk_3` FOREIGN KEY (`target_room_id`) REFERENCES `room` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
-INSERT INTO `effect` (`id`, `command_id`, `item_id`, `message`) VALUES
-(1,	1,	1,	'You take a quick nap. You feel refreshed!'),
-(2,	2,	3,	'You open the curtains and take a look outside.');
+INSERT INTO `effect` (`id`, `dtype`, `command_id`, `item_id`, `message`, `target_room_id`) VALUES
+(1,	'Message',	1,	1,	'You take a quick nap. You feel refreshed!',	NULL),
+(2,	'Message',	2,	3,	'You open the curtains and take a look outside.',	NULL),
+(3,	'ChangeRoom',	1,	9,	NULL,	4),
+(4,	'ChangeRoom',	1,	8,	NULL,	1),
+(5,	'Message',	1,	9,	'You call the lift.',	NULL);
 
 -- 2022-01-24 10:44:14
