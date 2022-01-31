@@ -7,6 +7,70 @@ SET sql_mode = 'NO_AUTO_VALUE_ON_ZERO';
 
 SET NAMES utf8mb4;
 
+DROP TABLE IF EXISTS `command`;
+CREATE TABLE `command` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+INSERT INTO `command` (`id`, `name`) VALUES
+(1,	'east'),
+(2,	'south'),
+(3,	'west'),
+(4,	'north'),
+(5,	'use'),
+(6,	'open'),
+(7,	'exit'),
+(8,	'quit'),
+(9,	'look');
+
+DROP TABLE IF EXISTS `direction_command`;
+CREATE TABLE `direction_command` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  PRIMARY KEY (`id`),
+  CONSTRAINT `direction_command_ibfk_1` FOREIGN KEY (`id`) REFERENCES `command` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+INSERT INTO `direction_command` (`id`) VALUES
+(1),
+(2),
+(3),
+(4);
+
+DROP TABLE IF EXISTS `exit_command`;
+CREATE TABLE `exit_command` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  PRIMARY KEY (`id`),
+  CONSTRAINT `exit_command_ibfk_1` FOREIGN KEY (`id`) REFERENCES `command` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+INSERT INTO `exit_command` (`id`) VALUES
+(7),
+(8);
+
+DROP TABLE IF EXISTS `item_command`;
+CREATE TABLE `item_command` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `default_message` varchar(255) NOT NULL,
+  PRIMARY KEY (`id`),
+  CONSTRAINT `item_command_ibfk_1` FOREIGN KEY (`id`) REFERENCES `command` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+INSERT INTO `item_command` (`id`, `default_message`) VALUES
+(5,	'You have no idea how to use that.'),
+(6,	'This doesn\'t seem to open.');
+
+DROP TABLE IF EXISTS `look_command`;
+CREATE TABLE `look_command` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  PRIMARY KEY (`id`),
+  CONSTRAINT `look_command_ibfk_1` FOREIGN KEY (`id`) REFERENCES `command` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+INSERT INTO `look_command` (`id`) VALUES
+(9);
+
 DROP TABLE IF EXISTS `room`;
 CREATE TABLE `room` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
@@ -42,20 +106,6 @@ INSERT INTO `item` (`id`, `name`, `visible`, `room_id`) VALUES
 (8,	'lift',	1,	4),
 (9,	'lift',	1,	1);
 
-DROP TABLE IF EXISTS `direction_command`;
-CREATE TABLE `direction_command` (
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `name` varchar(255) NOT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `name` (`name`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
-INSERT INTO `direction_command` (`id`, `name`) VALUES
-(1,	'east'),
-(4,	'north'),
-(2,	'south'),
-(3,	'west');
-
 DROP TABLE IF EXISTS `room_connection`;
 CREATE TABLE `room_connection` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
@@ -76,18 +126,6 @@ INSERT INTO `room_connection` (`id`, `from_room_id`, `to_room_id`, `direction_id
 (2,	2,	1,	3),
 (3,	1,	3,	4),
 (4,	3,	1,	2);
-
-DROP TABLE IF EXISTS `item_command`;
-CREATE TABLE `item_command` (
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `name` varchar(255) NOT NULL,
-  `default_message` varchar(255) NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
-INSERT INTO `item_command` (`id`, `name`, `default_message`) VALUES
-(1,	'use',	'You have no idea how to use that.'),
-(2,	'open',	'This doesn\'t seem to open.');
 
 DROP TABLE IF EXISTS `effect`;
 CREATE TABLE `effect` (
