@@ -1,9 +1,8 @@
-package com.example.repository.command;
+package com.example.entity.command;
 
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
-import com.example.entity.command.Command;
 import com.example.game.CommandInterpreter;
 
 /**

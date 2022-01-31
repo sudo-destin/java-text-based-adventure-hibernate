@@ -7,10 +7,10 @@ import com.example.entity.Room;
 import com.example.entity.command.DirectionCommand;
 import com.example.entity.command.ExitCommand;
 import com.example.entity.command.ItemCommand;
+import com.example.entity.command.LookCommand;
 import com.example.entity.effect.Effect;
 import com.example.repository.ItemRepository;
 import com.example.repository.RoomRepository;
-import com.example.repository.command.LookCommand;
 import com.example.repository.effect.EffectRepository;
 
 /**

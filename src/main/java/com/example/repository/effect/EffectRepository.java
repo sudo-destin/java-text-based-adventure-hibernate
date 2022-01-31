@@ -2,32 +2,20 @@ package com.example.repository.effect;
 
 import java.util.List;
 
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
 
 import com.example.entity.Item;
 import com.example.entity.command.ItemCommand;
 import com.example.entity.effect.Effect;
+import com.example.repository.Repository;
 
 /**
  * Service spécialisé dans les opérations en base de données concernant les objets MessageEffect
  */
-public class EffectRepository
+public class EffectRepository extends Repository<Effect>
 {
-    /**
-     * Le gestionnaire d'entités permettant l'accès effectif à la base de données
-     */
-    private EntityManager entityManager;
-
-    /**
-     * Crée un nouveau service
-     */
     public EffectRepository()
     {
-        // Crée une instance du gestionnaire d'entités
-        EntityManagerFactory factory = Persistence.createEntityManagerFactory("TextBasedAdventure");
-        entityManager = factory.createEntityManager();
+        super(Effect.class);
     }
 
     /**

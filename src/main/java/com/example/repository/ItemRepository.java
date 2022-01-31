@@ -2,10 +2,8 @@ package com.example.repository;
 
 import java.util.List;
 
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
 import javax.persistence.NoResultException;
-import javax.persistence.Persistence;
+
 
 import com.example.entity.Item;
 import com.example.entity.Room;
@@ -13,21 +11,14 @@ import com.example.entity.Room;
 /**
  * Service spécialisé dans les opérations en base de données concernant les objets Item
  */
-public class ItemRepository
+public class ItemRepository extends Repository<Item>
 {
-    /**
-     * Le gestionnaire d'entités permettant l'accès effectif à la base de données
-     */
-    private EntityManager entityManager;
-
     /**
      * Crée un nouveau service
      */
     public ItemRepository()
     {
-        // Crée une instance du gestionnaire d'entités
-        EntityManagerFactory factory = Persistence.createEntityManagerFactory("TextBasedAdventure");
-        entityManager = factory.createEntityManager();
+        super(Item.class);
     }
 
     /**

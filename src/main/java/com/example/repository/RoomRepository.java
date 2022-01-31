@@ -1,9 +1,6 @@
 package com.example.repository;
 
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
 import javax.persistence.NoResultException;
-import javax.persistence.Persistence;
 
 import com.example.entity.Room;
 import com.example.entity.command.DirectionCommand;
@@ -11,30 +8,14 @@ import com.example.entity.command.DirectionCommand;
 /**
  * Service spécialisé dans les opérations en base de données concernant les objets Room
  */
-public class RoomRepository
+public class RoomRepository extends Repository<Room>
 {
-    /**
-     * Le gestionnaire d'entités permettant l'accès effectif à la base de données
-     */
-    private EntityManager entityManager;
-
     /**
      * Crée un nouveau service
      */
     public RoomRepository()
     {
-        // Crée une instance du gestionnaire d'entités
-        EntityManagerFactory factory = Persistence.createEntityManagerFactory("TextBasedAdventure");
-        entityManager = factory.createEntityManager();
-    }
-
-    /**
-     * @param id L'identifiant en base de données du lieu recherché
-     * @return Le lieu correspondant à l'identifiant spécifié
-     */
-    public Room findById(int id)
-    {
-        return entityManager.find(Room.class, id);
+        super(Room.class);
     }
 
     /**
